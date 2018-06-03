@@ -20,7 +20,7 @@ What is mean total number of steps taken per day?
     h <- ggplot(TotalSteps, aes(Steps))
     h + geom_histogram(bins = 30)
 
-![](PA1_template_files/figure-markdown_strict/h-1.png)
+![](C:/Users/shove/RR/PA1_template_files/figure-html/h-1.png)
 
 ### 3. Calculate and report the mean and median of the total number of steps taken per day
 
@@ -41,9 +41,8 @@ What is the average daily activity pattern?
     ts <- ggplot(DailySteps, aes(Interval, Steps))
     ts + geom_line()
 
-![](PA1_template_files/figure-markdown_strict/tsplot-1.png)
-
-### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+![](C:/Users/shove/RR/PA1_template_files/figure-html/tsplot-1.png)
+ataset, contains the maximum number of steps?
 
     DailySteps[DailySteps$Steps == max(DailySteps$Steps), ]
 
@@ -80,7 +79,7 @@ Strategy: to fill in the missing values with the mean values for the
     ts.NAfilled <- ggplot(TotalSteps.NAfilled, aes(Steps))
     ts.NAfilled + geom_histogram(bins = 30)
 
-![](PA1_template_files/figure-markdown_strict/impute-1.png)
+![](C:/Users/shove/RR/PA1_template_files/figure-html/impute-1.png)
 
     mean(TotalSteps.NAfilled$Steps)
 
@@ -119,4 +118,4 @@ Are there differences in activity patterns between weekdays and weekends?
     g$widths <- unit.pmax(g1$widths, g2$widths)
     grid.newpage(); grid.draw(g)
 
-![](PA1_template_files/figure-markdown_strict/panel-1.png)
+![](C:/Users/shove/RR/PA1_template_files/figure-html/panel-1.png)
