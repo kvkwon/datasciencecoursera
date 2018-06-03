@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Activity monitoring report</title>
+
+<script src="PA1_template_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="PA1_template_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="PA1_template_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="PA1_template_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="PA1_template_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="PA1_template_files/navigation-1.1/tabsets.js"></script>
+<link href="PA1_template_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="PA1_template_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Activity monitoring report</h1>
+
+</div>
+
+
+<div id="the-data" class="section level2">
+<h2>The data</h2>
+<pre class="r"><code>activity &lt;- read.csv(&quot;activity.csv&quot;, header = TRUE)
+activity$date &lt;- as.Date(activity$date)</code></pre>
+</div>
+<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
+<h2>What is mean total number of steps taken per day?</h2>
+<div id="calculate-the-total-number-of-steps-taken-per-day" class="section level3">
+<h3>1. Calculate the total number of steps taken per day</h3>
+<pre class="r"><code>TotalSteps &lt;- aggregate(x = list(Steps = activity$steps), by = list(Date = activity$date), FUN = sum, na.rm = TRUE)</code></pre>
+</div>
+<div id="make-a-histogram-of-the-total-number-of-steps-taken-each-day" class="section level3">
+<h3>2. Make a histogram of the total number of steps taken each day</h3>
+<pre class="r"><code>library(ggplot2)
+h &lt;- ggplot(TotalSteps, aes(Steps))
+h + geom_histogram(bins = 30)</code></pre>
+<p><img src="PA1_template_files/figure-html/h-1.png" width="672" /></p>
+</div>
+<div id="calculate-and-report-the-mean-and-median-of-the-total-number-of-steps-taken-per-day" class="section level3">
+<h3>3. Calculate and report the mean and median of the total number of steps taken per day</h3>
+<pre class="r"><code>mean(TotalSteps$Steps)</code></pre>
+<pre><code>## [1] 9354.23</code></pre>
+<pre class="r"><code>median(TotalSteps$Steps)</code></pre>
+<pre><code>## [1] 10395</code></pre>
+</div>
+</div>
+<div id="what-is-the-average-daily-activity-pattern" class="section level2">
+<h2>What is the average daily activity pattern?</h2>
+<div id="make-a-time-series-plot-i.e.type-l-of-the-5-minute-interval-x-axis-and-the-average-number-of-steps-taken-averaged-across-all-days-y-axis" class="section level3">
+<h3>1. Make a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)</h3>
+<pre class="r"><code>DailySteps &lt;- aggregate(x = list(Steps = activity$steps), by = list(Interval = activity$interval), FUN = mean, na.rm = TRUE)
+ts &lt;- ggplot(DailySteps, aes(Interval, Steps))
+ts + geom_line()</code></pre>
+<p><img src="PA1_template_files/figure-html/tsplot-1.png" width="672" /></p>
+</div>
+<div id="which-5-minute-interval-on-average-across-all-the-days-in-the-dataset-contains-the-maximum-number-of-steps" class="section level3">
+<h3>2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?</h3>
+<pre class="r"><code>DailySteps[DailySteps$Steps == max(DailySteps$Steps), ]</code></pre>
+<pre><code>##     Interval    Steps
+## 104      835 206.1698</code></pre>
+</div>
+</div>
+<div id="imputing-missing-values" class="section level2">
+<h2>Imputing missing values</h2>
+<div id="calculate-and-report-the-total-number-of-missing-values-in-the-dataset-i.e.the-total-number-of-rows-with-nas" class="section level3">
+<h3>1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)</h3>
+<pre class="r"><code>i &lt;- 0; c &lt;- 0
+for(i in 1:nrow(activity)){
+  if (is.na(activity[i, ]$steps) == TRUE) c &lt;- c + 1
+}; c</code></pre>
+<pre><code>## [1] 2304</code></pre>
+</div>
+<div id="devise-a-strategy-for-filling-in-all-of-the-missing-values-in-the-dataset." class="section level3">
+<h3>2. Devise a strategy for filling in all of the missing values in the dataset.</h3>
+</div>
+<div id="create-a-new-dataset-that-is-equal-to-the-original-dataset-but-with-the-missing-data-filled-in." class="section level3">
+<h3>3. Create a new dataset that is equal to the original dataset but with the missing data filled in.</h3>
+<p>Strategy: to fill in the missing values with the mean values for the 5-min interval.</p>
+<pre class="r"><code>activity.NAfilled &lt;- activity
+for(i in 1:nrow(activity.NAfilled)){
+  if (is.na(activity.NAfilled[i, ]$steps) == TRUE) activity.NAfilled[i, ]$steps &lt;- DailySteps$Steps[activity.NAfilled[i, ]$interval == DailySteps$Interval]
+}</code></pre>
+</div>
+<div id="make-a-histogram-of-the-total-number-of-steps-taken-each-day-and-calculate-and-report-the-mean-and-median-total-number-of-steps-taken-per-day.-do-these-values-differ-from-the-estimates-from-the-first-part-of-the-assignment-what-is-the-impact-of-imputing-missing-data-on-the-estimates-of-the-total-daily-number-of-steps" class="section level3">
+<h3>4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</h3>
+<pre class="r"><code>TotalSteps.NAfilled &lt;- aggregate(x = list(Steps = activity.NAfilled$steps), by = list(Date = activity.NAfilled$date), FUN = sum, na.rm = TRUE)
+ts.NAfilled &lt;- ggplot(TotalSteps.NAfilled, aes(Steps))
+ts.NAfilled + geom_histogram(bins = 30)</code></pre>
+<p><img src="PA1_template_files/figure-html/impute-1.png" width="672" /></p>
+<pre class="r"><code>mean(TotalSteps.NAfilled$Steps)</code></pre>
+<pre><code>## [1] 10766.19</code></pre>
+<pre class="r"><code>median(TotalSteps.NAfilled$Steps)</code></pre>
+<pre><code>## [1] 10766.19</code></pre>
+<p>Impact of imputing: Data exhibits less skewed, more of a bell-shaped distribution.</p>
+</div>
+</div>
+<div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
+<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
+<div id="create-a-new-factor-variable-in-the-dataset-with-two-levels-a-aweekdaya-and-aweekenda-indicating-whether-a-given-date-is-a-weekday-or-weekend-day." class="section level3">
+<h3>1. Create a new factor variable in the dataset with two levels â€“ â€œweekdayâ€ and â€œweekendâ€ indicating whether a given date is a weekday or weekend day.</h3>
+<pre class="r"><code>day &lt;- c(&quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;)
+end &lt;- c(&quot;Saturday&quot;, &quot;Sunday&quot;)
+for(i in 1:nrow(activity.NAfilled)){
+  activity.NAfilled$week[i] &lt;- ifelse(weekdays(activity.NAfilled$date[i]) %in% day, &quot;weekday&quot;, &quot;weekend&quot;)
+}
+activity.NAfilled$week &lt;- as.factor(activity.NAfilled$week)</code></pre>
+</div>
+<div id="make-a-panel-plot-containing-a-time-series-plot" class="section level3">
+<h3>2.Make a panel plot containing a time series plot</h3>
+<pre class="r"><code>library(gtable); library(grid)
+DailySteps.NAfilled &lt;- aggregate(x = list(Steps = activity.NAfilled$steps), by = list(Interval = activity.NAfilled$interval, Week = activity.NAfilled$week), FUN = mean)
+ts1 &lt;- qplot(x = Interval, y = Steps, data = DailySteps.NAfilled[DailySteps.NAfilled$Week == &quot;weekday&quot;, ], geom = &quot;line&quot;) + ggtitle(&quot;Weekday&quot;)
+ts2 &lt;- qplot(x = Interval, y = Steps, data = DailySteps.NAfilled[DailySteps.NAfilled$Week == &quot;weekend&quot;, ], geom = &quot;line&quot;) + ggtitle(&quot;Weekend&quot;)
+g1 &lt;- ggplotGrob(ts1); g2 &lt;- ggplotGrob(ts2)
+g &lt;- rbind(g1, g2, size = &quot;first&quot;)
+g$widths &lt;- unit.pmax(g1$widths, g2$widths)
+grid.newpage(); grid.draw(g)</code></pre>
+<p><img src="PA1_template_files/figure-html/panel-1.png" width="672" /></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
